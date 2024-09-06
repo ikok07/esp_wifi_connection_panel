@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css" />
+    <script src="script.js" defer></script>
+    <title>ESP Panel</title>
+</head>
+<body>
+    <main class="main-container">
+        <h1>ESP32 Connection Panel</h1>
+        <div class="large-label-container">
+            <img src="img/loading.svg" class="connection-status-icon" />
+            <label for="connection-status">Connection status - </label>
+            <small id="connection-status" class="loading">Loading...</small>
+        </div>
+        <div class="connection-info--container hidden">
+            <h4>Connection info</h4>
+            <div class="label-container">
+                <img src="img/network.svg" />
+                <label for="connected-ssid">SSID - </label>
+                <small id="connected-ssid">I5ko_2Ghz</small>
+            </div>
+            <div class="label-container">
+                <img src="img/signal-2.svg" />
+                <label for="connected-signal">Signal strength - </label>
+                <small id="connected-signal" class="warning">-89 dBm</small>
+            </div>
+            <button id="disconnect-btn" class="button destructive" onclick="disconnectWifi()">Disconnect</button>
+        </div>
+        <div class="connection-form">
+            <div class="available-aps--container hidden">
+                <h4>Available networks</h4>
+                <div class="available-aps--list"></div>
+            </div>
+            <div class="connection-form--inputs hidden">
+                <div onclick="fetchAvailableNetworks()" class="back-btn">
+                    <img src="img/angle-left.svg" />
+                    <small>Go back</small>
+                </div>
+                <h4>Enter password for <span id="target-ap">I5ko_2Ghz</span>:</h4>
+                <div class="input-row">
+                    <div class="input"><input oninput="checkForValidPassword()" id="wifi-pass-input" placeholder="Network password" minlength="8" maxlength="64"/></div>
+                    <button id="connect-btn" class="button inactive" disabled onclick="connectWifi()">Connect</button>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
