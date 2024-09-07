@@ -2,6 +2,8 @@ window.onload = async () => {
     await fetchConnectionStatus();
 }
 
+let wifiConnecting = false;
+
 const connInfoContainer = document.querySelector(".connection-info--container");
 const apsList = document.querySelector(".available-aps--container");
 const connectionFormInputs = document.querySelector(".connection-form--inputs");
@@ -42,6 +44,7 @@ async function fetchConnectionStatus() {
                 connLabel.classList.remove("loading");
                 connLabel.classList.remove("fail");
                 connLabel.classList.add("ok");
+
                 displayConnectionInfo(body.ssid, body.signal_strength);
                 break;
             case 3:
@@ -103,6 +106,7 @@ async function connectWifi() {
     const ssid = document.getElementById("target-ap").textContent;
     const password = document.getElementById("wifi-pass-input").value;
     try {
+        wifiConnecting = true;
         connectBtn.disabled = true;
         connectBtn.classList.add("inactive");
         connectBtn.textContent = "Connecting...";
@@ -116,6 +120,7 @@ async function connectWifi() {
         connectBtn.disabled = false;
         connectBtn.classList.remove("inactive");
         connectBtn.textContent = "Failed to connect. Press to try again.";
+        wifiConnecting = false;
     } catch (err) {
         connectBtn.disabled = false;
         connectBtn.classList.remove("inactive");
@@ -155,6 +160,21 @@ function displayConnectionInfo(ssid, signalStrength) {
     const strengthField = document.getElementById("connected-signal");
     ssidField.textContent = ssid;
     strengthField.textContent = `${signalStrength} dBm`;
+    if (signalStrength >= -90) {
+        strengthField.classList.add("ok");
+        strengthField.classList.remove("warning");
+        strengthField.classList.remove("fail");
+    }
+    else if (signalStrength < -90 && signalStrength > -100) {
+        strengthField.classList.remove("ok");
+        strengthField.classList.add("warning");
+        strengthField.classList.remove("fail");
+    }
+    else {
+        strengthField.classList.remove("ok");
+        strengthField.classList.remove("warning");
+        strengthField.classList.add("fail");
+    }
     show([connInfoContainer]);
     hide([connectionFormInputs, apsList]);
 }
@@ -169,7 +189,7 @@ function displayFormInputs(ssid) {
 function checkForValidPassword() {
     const input = document.getElementById("wifi-pass-input")
     const connectBtn = document.getElementById("connect-btn");
-    if (input.value.length >= 8) {
+    if (input.value.length >= 8 || wifiConnecting) {
         connectBtn.classList.remove("inactive");
         connectBtn.disabled = false;
         return;
