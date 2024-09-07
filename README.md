@@ -1,1 +1,0 @@
-# esp_rgb_led_connection_panel
